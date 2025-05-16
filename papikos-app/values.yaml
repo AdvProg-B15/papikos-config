@@ -1,0 +1,13 @@
+global:
+  activeColor: blue 
+
+frontend:
+  image:
+    repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-fe
+    tag: latest
+  service:
+    port: 3000
+  ingress:
+    enabled: true
+    host: papikos.shop
+

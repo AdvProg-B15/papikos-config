@@ -1,0 +1,28 @@
+{{- range $color := list "blue" "green" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-{{ $color }}
+  labels:
+    app: frontend
+    version: {{ $color }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+      version: {{ $color }}
+  template:
+    metadata:
+      labels:
+        app: frontend
+        version: {{ $color }}
+    spec:
+      containers:
+        - name: frontend
+          image: "{{ $.Values.frontend.image.repository }}:{{ $.Values.frontend.image.tag }}"
+          ports:
+            - containerPort: {{ $.Values.frontend.service.port }}
+---
+{{- end }}
+
