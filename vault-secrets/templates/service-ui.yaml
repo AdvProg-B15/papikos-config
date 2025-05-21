@@ -1,0 +1,20 @@
+{{- if .Values.uiService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "vault-secrets.fullname" . }}-ui
+  labels:
+    {{- include "vault-secrets.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.uiService.type }}
+  ports:
+    - port: {{ .Values.uiService.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+      {{- if (and (eq .Values.uiService.type "NodePort") (not (empty .Values.uiService.nodePort))) }}
+      nodePort: {{ .Values.uiService.nodePort }}
+      {{- end }}
+  selector:
+    {{- include "vault-secrets.selectorLabels" . | nindent 4 }}
+{{- end }}

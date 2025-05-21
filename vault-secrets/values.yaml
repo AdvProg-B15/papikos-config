@@ -1,0 +1,60 @@
+replicaCount: 1
+
+image:
+  repository: hashicorp/vault
+  pullPolicy: IfNotPresent
+  tag: "1.19.0"
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podSecurityContext:
+  fsGroup: 1000 
+  runAsUser: 100
+  runAsGroup: 1000
+
+securityContext:
+  capabilities:
+    add: ["IPC_LOCK"]
+
+# Service for internal cluster communication (e.g., for Vault agent, app access)
+service:
+  type: ClusterIP
+  port: 8200
+
+uiService:
+  enabled: true
+  type: LoadBalancer 
+  port: 8200
+
+persistence:
+  enabled: true
+  storageClassName: "standard"
+  accessModes:
+    - ReadWriteOnce
+  size: 2Gi 
+
+vaultConfig: |
+  ui = true
+
+  storage "raft" {
+    path    = "/vault/file"
+    // node_id will be set dynamically by the StatefulSet pod name
+    // For HA, retry_join configuration would be added here
+  }
+
+  listener "tcp" {
+    address          = "0.0.0.0:8200"
+    cluster_address  = "0.0.0.0:8201"
+    tls_disable      = "true"
+  }
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
