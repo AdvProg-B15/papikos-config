@@ -8,11 +8,6 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
-serviceAccount:
-  create: true
-  annotations: {}
-  name: ""
-
 podAnnotations: {}
 podSecurityContext:
   fsGroup: 1000 
