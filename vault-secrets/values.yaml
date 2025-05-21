@@ -48,6 +48,9 @@ vaultConfig: |
     tls_disable      = "true"
   }
 
+raft:
+  path: "/vault/file"
+
 nodeSelector: {}
 tolerations: []
 affinity: {}
