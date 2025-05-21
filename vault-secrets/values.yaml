@@ -42,12 +42,6 @@ persistence:
 vaultConfig: |
   ui = true
 
-  storage "raft" {
-    path    = "/vault/file"
-    // node_id will be set dynamically by the StatefulSet pod name
-    // For HA, retry_join configuration would be added here
-  }
-
   listener "tcp" {
     address          = "0.0.0.0:8200"
     cluster_address  = "0.0.0.0:8201"

@@ -68,11 +68,25 @@ Vault config with dynamic values
 {{ .Values.vaultConfig }}
 
 api_addr     = "http://$(POD_IP):8200"
-cluster_addr = "http://$(HOSTNAME).{{ include "vault-secrets.fullname" . }}-headless:8201" // For Raft communication
+cluster_addr = "http://$(HOSTNAME).{{ include "vault-secrets.fullname" . }}-headless:8201"
 
 storage "raft" {
-  // node_id must be unique for each raft member
-  // We use the pod's hostname which is stable for StatefulSet pods
+  path    = "{{ .Values.raft.path }}" 
   node_id = "$(HOSTNAME)"
+  // For HA, retry_join configuration would be added here if needed
+  {{- if gt (int .Values.replicaCount) 1 }}
+  {{- $fullName := include "vault-secrets.fullname" . }}
+  {{- $namespace := .Release.Namespace }}
+  {{- $headlessService := printf "%s-headless.%s.svc" $fullName $namespace }}
+  {{- range $i, $e := until (int .Values.replicaCount) }}
+  retry_join {
+    leader_api_addr = "http://{{ $fullName }}-{{ $i }}.{{ $headlessService }}:8200"
+    // TODO: Use CA and TLS later
+    // leader_ca_cert_file = "/path/to/ca.pem" // If using TLS
+    // leader_client_cert_file = "/path/to/client.pem" // If using TLS
+    // leader_client_key_file = "/path/to/client-key.pem" // If using TLS
+  }
+  {{- end }}
+  {{- end }}
 }
 {{- end -}}
