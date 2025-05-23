@@ -26,6 +26,7 @@ frontend:
     # - hosts:
     #   - papikos.shop
     #   secretName: papikos-shop-tls
+
 auth:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-auth
@@ -63,9 +64,44 @@ auth:
       - key: ADMIN_PASSWORD
         envName: ADMIN_PASSWORD
     # mountAllKeysFromSecret: "auth-database-credentials"
-# Version tracking (for reference)
+
+kos:
+  image:
+    repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-kos
+    tag: latest # This will be automatically updated by CI/CD
+    imagePullPolicy: Always
+  service:
+    name: kos
+    port: 8080
+  ingress:
+    enabled: true
+    host: kos.papikos.shop
+    # tls: # Optional TLS configuration for kos
+    # - hosts:
+    #   - kos.papikos.shop
+    #   secretName: kos-papikos-shop-tls
+  # Database configuration from Kubernetes Secret
+  config:
+    enabled: true
+    secretName: "kos-configuration"
+    envMappings:
+      - key: DB_HOST
+        envName: DB_HOST
+      - key: DB_NAME
+        envName: DB_NAME
+      - key: DB_PORT
+        envName: DB_PORT
+      - key: DB_USER
+        envName: DB_USER
+      - key: DB_PASSWORD
+        envName: DB_PASSWORD
+      - key: AUTH_SERVER_URL
+        envName: AUTH_SERVER_URL
+    # mountAllKeysFromSecret: "kos-database-credentials"
+
 version:
   auth: latest # Current deployed version
   frontend: latest # Current deployed version
+  kos: latest # Current deployed version
   lastUpdated: "" # Timestamp of last update
   deployedBy: "" # Who triggered the deployment
