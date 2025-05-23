@@ -54,8 +54,13 @@ spec:
           {{- if $kosValues.config.mountAllKeysFromSecret }}
           envFrom:
             - secretRef:
-              name: {{ $kosValues.config.mountAllKeysFromSecret }}
+                name: {{ $kosValues.config.mountAllKeysFromSecret }}
+            - secretRef:
+                name: {{ $kosValues.rabbitmq.mountAllKeysFromSecret }}
           {{- else if $kosValues.config.secretName }}
+          envFrom:
+            - secretRef:
+                name: {{ $kosValues.rabbitmq.mountAllKeysFromSecret }}
           env:
             {{- range $kosValues.config.envMappings }}
             - name: {{ .envName }}

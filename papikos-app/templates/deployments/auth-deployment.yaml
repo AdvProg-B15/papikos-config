@@ -55,7 +55,12 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ $authValues.config.mountAllKeysFromSecret }}
+            - secretRef:
+                name: {{ $authValues.rabbitmq.mountAllKeysFromSecret }}
           {{- else if $authValues.config.secretName }}
+          envFrom:
+            - secretRef:
+                name: {{ $authValues.rabbitmq.mountAllKeysFromSecret }}
           env:
             {{- range $authValues.config.envMappings }}
             - name: {{ .envName }}

@@ -1,16 +1,18 @@
-# values.yaml
 global:
   activeColor: blue
   # Global image settings
   imageRegistry: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository
   # Default image pull policy
   imagePullPolicy: Always
+
 ingress:
   annotations: {}
   # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+
 serviceAccount:
   create: false
   name: "default"
+
 frontend:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-fe
@@ -42,6 +44,9 @@ auth:
     # - hosts:
     #   - auth.papikos.shop
     #   secretName: auth-papikos-shop-tls
+  rabbitmq:
+    enabled: true
+    mountAllKeysFromSecret: "amqp-configuration"
   # Database configuration from Kubernetes Secret
   config:
     enabled: true
@@ -80,6 +85,9 @@ kos:
     #   - kos.papikos.shop
     #   secretName: kos-papikos-shop-tls
   # Database configuration from Kubernetes Secret
+  rabbitmq:
+    enabled: true
+    mountAllKeysFromSecret: "amqp-configuration"
   config:
     enabled: true
     secretName: "kos-configuration"
