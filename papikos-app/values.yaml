@@ -1,14 +1,55 @@
-global:
-  activeColor: blue 
+# values.yaml
 
+global:
+  activeColor: blue
+
+ingress: 
+  annotations: {}
+  # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 
 frontend:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-fe
     tag: latest
   service:
+    name: frontend 
     port: 3000
   ingress:
     enabled: true
     host: papikos.shop
+    # tls: # Optional TLS configuration for frontend
+    # - hosts:
+    #   - papikos.shop
+    #   secretName: papikos-shop-tls
 
+auth:
+  image:
+    repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-auth
+    tag: latest
+  service:
+    name: auth 
+    port: 8080 
+  ingress:
+    enabled: true
+    host: auth.papikos.shop
+    # tls: # Optional TLS configuration for auth
+    # - hosts:
+    #   - auth.papikos.shop
+    #   secretName: auth-papikos-shop-tls
+  # Database configuration from Kubernetes Secret
+  dbConfig:
+    enabled: true 
+    secretName: "auth-database-credentials" 
+    envMappings:
+      - key: DB_HOST
+        envName: DATABASE_HOST
+      - key: DB_PORT
+        envName: DATABASE_PORT
+      - key: DB_USER
+        envName: DATABASE_USER
+      - key: DB_PASSWORD
+        envName: DATABASE_PASSWORD
+      - key: DB_NAME
+        envName: DATABASE_NAME
+    # mountAllKeysFromSecret: "auth-database-credentials"
+    # Note: If using mountAllKeysFromSecret, envMappings above would typically be commented out or removed.

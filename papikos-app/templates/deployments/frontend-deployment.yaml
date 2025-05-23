@@ -1,28 +1,64 @@
+{{- $top := . -}}
+{{- $frontendValues := .Values.frontend -}}
 {{- range $color := list "blue" "green" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-{{ $color }}
+  name: {{ include "papikos-app.fullname" $top }}-frontend-{{ $color }}
   labels:
-    app: frontend
+    {{- include "papikos-app.labels" $top | nindent 4 }}
+    app.kubernetes.io/component: frontend
     version: {{ $color }}
 spec:
-  replicas: 1
+  replicas: {{ $frontendValues.replicaCount | default 1 }}
   selector:
     matchLabels:
-      app: frontend
+      {{- include "papikos-app.selectorLabels" $top | nindent 6 }}
+      app.kubernetes.io/component: frontend
       version: {{ $color }}
   template:
     metadata:
+      annotations:
+        # checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
-        app: frontend
+        {{- include "papikos-app.selectorLabels" $top | nindent 8 }}
+        app.kubernetes.io/component: frontend
         version: {{ $color }}
     spec:
+      {{- with $top.Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "papikos-app.serviceAccountName" $top }}
+      securityContext:
+        {{- toYaml $frontendValues.podSecurityContext | default $top.Values.global.podSecurityContext | nindent 8 }}
       containers:
         - name: frontend
-          image: "{{ $.Values.frontend.image.repository }}:{{ $.Values.frontend.image.tag }}"
+          securityContext:
+            {{- toYaml $frontendValues.securityContext | default $top.Values.global.securityContext | nindent 12 }}
+          image: "{{ $frontendValues.image.repository }}:{{ $frontendValues.image.tag | default $top.Chart.AppVersion }}"
+          imagePullPolicy: {{ $frontendValues.image.pullPolicy | default "IfNotPresent" }}
           ports:
-            - containerPort: {{ $.Values.frontend.service.port }}
+            - name: http
+              containerPort: {{ $frontendValues.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml $frontendValues.resources | default $top.Values.global.resources | nindent 12 }}
+          # env:
+          #   - name: DEPLOY_COLOR
+          #     value: {{ $color }}
+      {{- with $frontendValues.nodeSelector | default $top.Values.global.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $frontendValues.affinity | default $top.Values.global.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $frontendValues.tolerations | default $top.Values.global.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 ---
 {{- end }}
 

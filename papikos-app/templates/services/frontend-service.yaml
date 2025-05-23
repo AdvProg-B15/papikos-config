@@ -1,12 +1,21 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: {{ .Values.frontend.service.name | default (printf "%s-frontend" (include "papikos-app.fullname" .)) }}
+  labels:
+    {{- include "papikos-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
 spec:
-  selector:
-    app: frontend
-    version: {{ .Values.global.activeColor }}
+  type: {{ .Values.frontend.service.type | default "ClusterIP" }}
   ports:
     - port: {{ .Values.frontend.service.port }}
-      targetPort: {{ .Values.frontend.service.port }}
+      targetPort: http 
+      protocol: TCP
+      name: http
+  selector:
+    # These labels must match the labels on the PODS of the ACTIVE deployment
+    app.kubernetes.io/name: {{ include "papikos-app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: frontend
+    version: {{ .Values.global.activeColor }}
 

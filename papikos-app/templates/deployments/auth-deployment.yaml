@@ -1,0 +1,86 @@
+{{- $top := . -}}
+{{- $authValues := .Values.auth -}}
+{{- $globalValues := .Values.global -}}
+{{- range $color := list "blue" "green" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "papikos-app.fullname" $top }}-auth-{{ $color }}
+  labels:
+    {{- include "papikos-app.labels" $top | nindent 4 }}
+    app.kubernetes.io/component: auth
+    version: {{ $color }} # Crucial for service selection
+spec:
+  replicas: {{ $authValues.replicaCount | default 1 }} # Consider if you want different replica counts for blue/green or for active/inactive
+  selector:
+    matchLabels:
+      {{- include "papikos-app.selectorLabels" $top | nindent 6 }}
+      app.kubernetes.io/component: auth # Keep this to select auth pods
+      version: {{ $color }} # Differentiate by color
+  template:
+    metadata:
+      labels:
+        {{- include "papikos-app.selectorLabels" $top | nindent 8 }}
+        app.kubernetes.io/component: auth # Keep this to identify as auth pods
+        version: {{ $color }} # Differentiate by color
+        # You might add an annotation for the last deployed time or git commit for this color
+    spec:
+      {{- with $top.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "papikos-app.serviceAccountName" $top }}
+      securityContext:
+        {{- toYaml $top.Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: auth # The container name itself usually remains 'auth'
+          securityContext:
+            {{- toYaml $authValues.securityContext | default $top.Values.securityContext | nindent 12 }}
+          image: "{{ $authValues.image.repository }}:{{ $authValues.image.tag | default $top.Chart.AppVersion }}"
+          imagePullPolicy: {{ $authValues.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: http
+              containerPort: {{ $authValues.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health 
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            {{- toYaml $authValues.resources | default $top.Values.resources | nindent 12 }}
+          {{- if $authValues.dbConfig.enabled }}
+          {{- if $authValues.dbConfig.mountAllKeysFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ $authValues.dbConfig.mountAllKeysFromSecret }}
+          {{- else if $authValues.dbConfig.secretName }}
+          env:
+            {{- range $authValues.dbConfig.envMappings }}
+            - name: {{ .envName }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $authValues.dbConfig.secretName }} # Note: $authValues is used here
+                  key: {{ .key }}
+            {{- end }}
+            # Add other non-secret specific env vars for auth if any
+            # - name: DEPLOY_COLOR
+            #   value: {{ $color }}
+          {{- end }}
+          {{- end }}
+      {{- with $top.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $top.Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $top.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+{{- end }}
+
