@@ -28,7 +28,6 @@ frontend:
     # - hosts:
     #   - papikos.shop
     #   secretName: papikos-shop-tls
-
 auth:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-auth
@@ -68,11 +67,10 @@ auth:
         envName: ADMIN_EMAIL
       - key: ADMIN_PASSWORD
         envName: ADMIN_PASSWORD
-
 kos:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-kos
-    tag: latest # This will be automatically updated by CI/CD
+    tag: v0.0.1 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: kos
@@ -105,7 +103,6 @@ kos:
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
     # mountAllKeysFromSecret: "kos-database-credentials"
-
 version:
   auth: latest # Current deployed version
   frontend: latest # Current deployed version
