@@ -58,6 +58,16 @@ auth:
         envName: DATABASE_NAME
     # mountAllKeysFromSecret: "auth-database-credentials"
     # Note: If using mountAllKeysFromSecret, envMappings above would typically be commented out or removed.
+   authConfig:
+    enabled: true
+    secretName: "auth-configuration"
+    envMappings:
+      - key: JWT_SECRET
+        envName: JWT_SECRET
+      - key: ADMIN_EMAIL
+        envName: ADMIN_EMAIL
+      - key: ADMIN_PASSWORD
+        envName: ADMIN_PASSWORD
 # Version tracking (for reference)
 version:
   auth: latest # Current deployed version
