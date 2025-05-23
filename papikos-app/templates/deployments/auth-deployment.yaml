@@ -50,18 +50,18 @@ spec:
             periodSeconds: 20
           resources:
             {{- toYaml $authValues.resources | default $top.Values.resources | nindent 12 }}
-          {{- if $authValues.dbConfig.enabled }}
-          {{- if $authValues.dbConfig.mountAllKeysFromSecret }}
+          {{- if $authValues.config.enabled }}
+          {{- if $authValues.config.mountAllKeysFromSecret }}
           envFrom:
             - secretRef:
-                name: {{ $authValues.dbConfig.mountAllKeysFromSecret }}
-          {{- else if $authValues.dbConfig.secretName }}
+                name: {{ $authValues.config.mountAllKeysFromSecret }}
+          {{- else if $authValues.config.secretName }}
           env:
-            {{- range $authValues.dbConfig.envMappings }}
+            {{- range $authValues.config.envMappings }}
             - name: {{ .envName }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ $authValues.dbConfig.secretName }} # Note: $authValues is used here
+                  name: {{ $authValues.config.secretName }} # Note: $authValues is used here
                   key: {{ .key }}
             {{- end }}
             # Add other non-secret specific env vars for auth if any

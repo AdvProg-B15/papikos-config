@@ -42,9 +42,9 @@ auth:
     #   - auth.papikos.shop
     #   secretName: auth-papikos-shop-tls
   # Database configuration from Kubernetes Secret
-  dbConfig:
+  config:
     enabled: true
-    secretName: "auth-database-credentials"
+    secretName: "auth-configuration"
     envMappings:
       - key: DB_HOST
         envName: DATABASE_HOST
@@ -56,17 +56,13 @@ auth:
         envName: DATABASE_PASSWORD
       - key: DB_NAME
         envName: DATABASE_NAME
-    # mountAllKeysFromSecret: "auth-database-credentials"
-  authConfig:
-    enabled: true
-    secretName: "auth-configuration"
-    envMappings:
       - key: JWT_SECRET
         envName: JWT_SECRET
       - key: ADMIN_EMAIL
         envName: ADMIN_EMAIL
       - key: ADMIN_PASSWORD
         envName: ADMIN_PASSWORD
+    # mountAllKeysFromSecret: "auth-database-credentials"
 # Version tracking (for reference)
 version:
   auth: latest # Current deployed version
