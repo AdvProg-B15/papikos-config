@@ -14,7 +14,7 @@ serviceAccount:
 frontend:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-fe
-    tag: latest
+    tag: v0.0.1
     imagePullPolicy: Always
   service:
     name: frontend
@@ -30,7 +30,7 @@ frontend:
 auth:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-auth
-    tag: v0.0.1 # This will be automatically updated by CI/CD
+    tag: v0.0.4 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: auth
@@ -63,7 +63,6 @@ auth:
         envName: ADMIN_EMAIL
       - key: ADMIN_PASSWORD
         envName: ADMIN_PASSWORD
-    # mountAllKeysFromSecret: "auth-database-credentials"
 
 kos:
   image:
