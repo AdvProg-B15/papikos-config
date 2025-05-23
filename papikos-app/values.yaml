@@ -47,15 +47,15 @@ auth:
     secretName: "auth-configuration"
     envMappings:
       - key: DB_HOST
-        envName: DATABASE_HOST
-      - key: DB_PORT
-        envName: DATABASE_PORT
-      - key: DB_USER
-        envName: DATABASE_USER
-      - key: DB_PASSWORD
-        envName: DATABASE_PASSWORD
+        envName: DB_HOST
       - key: DB_NAME
-        envName: DATABASE_NAME
+        envName: DB_NAME
+      - key: DB_PORT
+        envName: DB_PORT
+      - key: DB_USER
+        envName: DB_USER
+      - key: DB_PASSWORD
+        envName: DB_PASSWORD
       - key: JWT_SECRET
         envName: JWT_SECRET
       - key: ADMIN_EMAIL
