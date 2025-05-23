@@ -24,7 +24,7 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
-Create chart Lchart Labels
+Create chart labels.
 */}}
 {{- define "papikos-app.labels" -}}
 helm.sh/chart: {{ include "papikos-app.name" . }}
@@ -36,9 +36,23 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{/*
-Selector labels
+Selector labels.
 */}}
 {{- define "papikos-app.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "papikos-app.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use.
+The serviceAccountName helper is called with the top-level context (e.g., $top from your deployment).
+Inside this helper, "." refers to that top-level context.
+*/}}
+{{- define "papikos-app.serviceAccountName" -}}
+{{- if and .Values.serviceAccount .Values.serviceAccount.create -}}
+    {{- default (include "papikos-app.fullname" .) .Values.serviceAccount.name -}}
+{{- else -}}
+    {{- default "default" (and .Values.serviceAccount .Values.serviceAccount.name) -}}
+{{- end -}}
+{{- end -}}
+

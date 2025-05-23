@@ -7,6 +7,10 @@ ingress:
   annotations: {}
   # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 
+serviceAccount:
+  create: false
+  name: "default"
+
 frontend:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-fe

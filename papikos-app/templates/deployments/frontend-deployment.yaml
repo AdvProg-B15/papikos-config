@@ -10,6 +10,9 @@ metadata:
     app.kubernetes.io/component: frontend
     version: {{ $color }}
 spec:
+  # For green-blue, you might want to control replicas based on activeColor
+  # For simplicity, this uses the replicaCount for both.
+  # A more advanced setup might use 0 or 1 for inactive and scale active.
   replicas: {{ $frontendValues.replicaCount | default 1 }}
   selector:
     matchLabels:
@@ -18,8 +21,9 @@ spec:
       version: {{ $color }}
   template:
     metadata:
-      annotations:
-        # checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      annotations: {} # Add any specific annotations you need here
+        # Example:
+        # projectcontour.io/upstream-protocol.tls: "http,443"
       labels:
         {{- include "papikos-app.selectorLabels" $top | nindent 8 }}
         app.kubernetes.io/component: frontend
@@ -42,6 +46,19 @@ spec:
             - name: http
               containerPort: {{ $frontendValues.service.port }}
               protocol: TCP
+          # Liveness and Readiness Probes (adjust paths as needed)
+          livenessProbe:
+            httpGet:
+              path: / # Or a specific health check endpoint like /healthz
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: / # Or a specific readiness endpoint like /readyz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
           resources:
             {{- toYaml $frontendValues.resources | default $top.Values.global.resources | nindent 12 }}
           # env:
