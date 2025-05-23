@@ -57,8 +57,7 @@ auth:
       - key: DB_NAME
         envName: DATABASE_NAME
     # mountAllKeysFromSecret: "auth-database-credentials"
-    # Note: If using mountAllKeysFromSecret, envMappings above would typically be commented out or removed.
-   authConfig:
+  authConfig:
     enabled: true
     secretName: "auth-configuration"
     envMappings:
