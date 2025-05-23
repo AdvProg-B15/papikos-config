@@ -1,9 +1,12 @@
 # values.yaml
-
 global:
   activeColor: blue
+  # Global image settings
+  imageRegistry: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository
+  # Default image pull policy
+  imagePullPolicy: Always
 
-ingress: 
+ingress:
   annotations: {}
   # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 
@@ -17,7 +20,7 @@ frontend:
     tag: latest
     imagePullPolicy: Always
   service:
-    name: frontend 
+    name: frontend
     port: 3000
   ingress:
     enabled: true
@@ -30,11 +33,11 @@ frontend:
 auth:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-auth
-    tag: latest
+    tag: latest  # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
-    name: auth 
-    port: 8080 
+    name: auth
+    port: 8080
   ingress:
     enabled: true
     host: auth.papikos.shop
@@ -42,10 +45,11 @@ auth:
     # - hosts:
     #   - auth.papikos.shop
     #   secretName: auth-papikos-shop-tls
+  
   # Database configuration from Kubernetes Secret
   dbConfig:
-    enabled: true 
-    secretName: "auth-database-credentials" 
+    enabled: true
+    secretName: "auth-database-credentials"
     envMappings:
       - key: DB_HOST
         envName: DATABASE_HOST
@@ -59,3 +63,11 @@ auth:
         envName: DATABASE_NAME
     # mountAllKeysFromSecret: "auth-database-credentials"
     # Note: If using mountAllKeysFromSecret, envMappings above would typically be commented out or removed.
+
+# Version tracking (for reference)
+version:
+  auth: latest  # Current deployed version
+  frontend: latest  # Current deployed version
+  lastUpdated: ""  # Timestamp of last update
+  deployedBy: ""  # Who triggered the deployment
+
