@@ -15,6 +15,7 @@ frontend:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-fe
     tag: latest
+    imagePullPolicy: Always
   service:
     name: frontend 
     port: 3000
@@ -30,6 +31,7 @@ auth:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-auth
     tag: latest
+    imagePullPolicy: Always
   service:
     name: auth 
     port: 8080 
