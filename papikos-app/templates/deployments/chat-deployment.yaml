@@ -1,0 +1,91 @@
+{{- $top := . -}}
+{{- $chatValues := .Values.chat -}}
+{{- $globalValues := .Values.global -}}
+{{- range $color := list "blue" "green" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "papikos-app.fullname" $top }}-chat-{{ $color }}
+  labels:
+    {{- include "papikos-app.labels" $top | nindent 4 }}
+    app.kubernetes.io/component: chat
+    version: {{ $color }} # Crucial for service selection
+spec:
+  replicas: {{ $chatValues.replicaCount | default 1 }} # Consider if you want different replica counts for blue/green or for active/inactive
+  selector:
+    matchLabels:
+      {{- include "papikos-app.selectorLabels" $top | nindent 6 }}
+      app.kubernetes.io/component: chat # Keep this to select chat pods
+      version: {{ $color }} # Differentiate by color
+  template:
+    metadata:
+      labels:
+        {{- include "papikos-app.selectorLabels" $top | nindent 8 }}
+        app.kubernetes.io/component: chat # Keep this to identify as chat pods
+        version: {{ $color }} # Differentiate by color
+        # You might add an annotation for the last deployed time or git commit for this color
+    spec:
+      {{- with $top.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "papikos-app.serviceAccountName" $top }}
+      securityContext:
+        {{- toYaml $top.Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: chat # The container name itself usually remains 'chat'
+          securityContext:
+            {{- toYaml $chatValues.securityContext | default $top.Values.securityContext | nindent 12 }}
+          image: "{{ $chatValues.image.repository }}:{{ $chatValues.image.tag | default $top.Chart.AppVersion }}"
+          imagePullPolicy: {{ $chatValues.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: http
+              containerPort: {{ $chatValues.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health 
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            {{- toYaml $chatValues.resources | default $top.Values.resources | nindent 12 }}
+          {{- if $chatValues.config.enabled }}
+          {{- if $chatValues.config.mountAllKeysFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ $chatValues.config.mountAllKeysFromSecret }}
+            - secretRef:
+                name: {{ $chatValues.rabbitmq.mountAllKeysFromSecret }}
+          {{- else if $chatValues.config.secretName }}
+          envFrom:
+            - secretRef:
+                name: {{ $chatValues.rabbitmq.mountAllKeysFromSecret }}
+          env:
+            {{- range $chatValues.config.envMappings }}
+            - name: {{ .envName }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $chatValues.config.secretName }} # Note: $chatValues is used here
+                  key: {{ .key }}
+            {{- end }}
+            # Add other non-secret specific env vars for chat if any
+            # - name: DEPLOY_COLOR
+            #   value: {{ $color }}
+          {{- end }}
+          {{- end }}
+      {{- with $top.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $top.Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $top.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+{{- end }}
+

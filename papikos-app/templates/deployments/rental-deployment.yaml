@@ -1,0 +1,91 @@
+{{- $top := . -}}
+{{- $rentalValues := .Values.rental -}}
+{{- $globalValues := .Values.global -}}
+{{- range $color := list "blue" "green" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "papikos-app.fullname" $top }}-rental-{{ $color }}
+  labels:
+    {{- include "papikos-app.labels" $top | nindent 4 }}
+    app.kubernetes.io/component: rental
+    version: {{ $color }} # Crucial for service selection
+spec:
+  replicas: {{ $rentalValues.replicaCount | default 1 }} # Consider if you want different replica counts for blue/green or for active/inactive
+  selector:
+    matchLabels:
+      {{- include "papikos-app.selectorLabels" $top | nindent 6 }}
+      app.kubernetes.io/component: rental # Keep this to select rental pods
+      version: {{ $color }} # Differentiate by color
+  template:
+    metadata:
+      labels:
+        {{- include "papikos-app.selectorLabels" $top | nindent 8 }}
+        app.kubernetes.io/component: rental # Keep this to identify as rental pods
+        version: {{ $color }} # Differentiate by color
+        # You might add an annotation for the last deployed time or git commit for this color
+    spec:
+      {{- with $top.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "papikos-app.serviceAccountName" $top }}
+      securityContext:
+        {{- toYaml $top.Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: rental # The container name itself usually remains 'rental'
+          securityContext:
+            {{- toYaml $rentalValues.securityContext | default $top.Values.securityContext | nindent 12 }}
+          image: "{{ $rentalValues.image.repository }}:{{ $rentalValues.image.tag | default $top.Chart.AppVersion }}"
+          imagePullPolicy: {{ $rentalValues.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: http
+              containerPort: {{ $rentalValues.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health 
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            {{- toYaml $rentalValues.resources | default $top.Values.resources | nindent 12 }}
+          {{- if $rentalValues.config.enabled }}
+          {{- if $rentalValues.config.mountAllKeysFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ $rentalValues.config.mountAllKeysFromSecret }}
+            - secretRef:
+                name: {{ $rentalValues.rabbitmq.mountAllKeysFromSecret }}
+          {{- else if $rentalValues.config.secretName }}
+          envFrom:
+            - secretRef:
+                name: {{ $rentalValues.rabbitmq.mountAllKeysFromSecret }}
+          env:
+            {{- range $rentalValues.config.envMappings }}
+            - name: {{ .envName }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $rentalValues.config.secretName }} # Note: $rentalValues is used here
+                  key: {{ .key }}
+            {{- end }}
+            # Add other non-secret specific env vars for rental if any
+            # - name: DEPLOY_COLOR
+            #   value: {{ $color }}
+          {{- end }}
+          {{- end }}
+      {{- with $top.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $top.Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $top.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+{{- end }}
+

@@ -28,6 +28,7 @@ frontend:
     # - hosts:
     #   - papikos.shop
     #   secretName: papikos-shop-tls
+
 auth:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-auth
@@ -103,9 +104,163 @@ kos:
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
     # mountAllKeysFromSecret: "kos-database-credentials"
+
+rental:
+  image:
+    repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-rental
+    tag: v0.0.1 # This will be automatically updated by CI/CD
+    imagePullPolicy: Always
+  service:
+    name: rental
+    port: 8080
+  ingress:
+    enabled: true
+    host: rental.papikos.shop
+    # tls: # Optional TLS configuration for kos
+    # - hosts:
+    #   - kos.papikos.shop
+    #   secretName: kos-papikos-shop-tls
+  # Database configuration from Kubernetes Secret
+  rabbitmq:
+    enabled: true
+    mountAllKeysFromSecret: "amqp-configuration"
+  config:
+    enabled: true
+    secretName: "rental-configuration"
+    envMappings:
+      - key: DB_HOST
+        envName: DB_HOST
+      - key: DB_NAME
+        envName: DB_NAME
+      - key: DB_PORT
+        envName: DB_PORT
+      - key: DB_USER
+        envName: DB_USER
+      - key: DB_PASSWORD
+        envName: DB_PASSWORD
+      - key: AUTH_SERVER_URL
+        envName: AUTH_SERVER_URL
+    # mountAllKeysFromSecret: "kos-database-credentials"
+
+payment:
+  image:
+    repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-payment
+    tag: v0.0.1 # This will be automatically updated by CI/CD
+    imagePullPolicy: Always
+  service:
+    name: payment
+    port: 8080
+  ingress:
+    enabled: true
+    host: payment.papikos.shop
+    # tls: # Optional TLS configuration for kos
+    # - hosts:
+    #   - payment.papikos.shop
+    #   secretName: payment-papikos-shop-tls
+  # Database configuration from Kubernetes Secret
+  rabbitmq:
+    enabled: true
+    mountAllKeysFromSecret: "amqp-configuration"
+  config:
+    enabled: true
+    secretName: "payment-configuration"
+    envMappings:
+      - key: DB_HOST
+        envName: DB_HOST
+      - key: DB_NAME
+        envName: DB_NAME
+      - key: DB_PORT
+        envName: DB_PORT
+      - key: DB_USER
+        envName: DB_USER
+      - key: DB_PASSWORD
+        envName: DB_PASSWORD
+      - key: AUTH_SERVER_URL
+        envName: AUTH_SERVER_URL
+    # mountAllKeysFromSecret: "payment-database-credentials"
+
+notification:
+  image:
+    repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-notification-wishlist
+    tag: v0.0.1 # This will be automatically updated by CI/CD
+    imagePullPolicy: Always
+  service:
+    name: notification
+    port: 8080
+  ingress:
+    enabled: true
+    host: notification.papikos.shop
+    # tls: # Optional TLS configuration for kos
+    # - hosts:
+    #   - notification.papikos.shop
+    #   secretName: notification-papikos-shop-tls
+  # Database configuration from Kubernetes Secret
+  rabbitmq:
+    enabled: true
+    mountAllKeysFromSecret: "amqp-configuration"
+  config:
+    enabled: true
+    secretName: "notification-configuration"
+    envMappings:
+      - key: DB_HOST
+        envName: DB_HOST
+      - key: DB_NAME
+        envName: DB_NAME
+      - key: DB_PORT
+        envName: DB_PORT
+      - key: DB_USER
+        envName: DB_USER
+      - key: DB_PASSWORD
+        envName: DB_PASSWORD
+      - key: AUTH_SERVER_URL
+        envName: AUTH_SERVER_URL
+    # mountAllKeysFromSecret: "notification-database-credentials"
+
+chat:
+  image:
+    repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-chat
+    tag: v0.0.1 # This will be automatically updated by CI/CD
+    imagePullPolicy: Always
+  service:
+    name: chat
+    port: 8080
+  ingress:
+    enabled: true
+    host: chat.papikos.shop
+    # tls: # Optional TLS configuration for kos
+    # - hosts:
+    #   - notification.papikos.shop
+    #   secretName: notification-papikos-shop-tls
+  # Database configuration from Kubernetes Secret
+  rabbitmq:
+    enabled: true
+    mountAllKeysFromSecret: "amqp-configuration"
+  config:
+    enabled: true
+    secretName: "chat-configuration"
+    envMappings:
+      - key: DB_HOST
+        envName: DB_HOST
+      - key: DB_NAME
+        envName: DB_NAME
+      - key: DB_PORT
+        envName: DB_PORT
+      - key: DB_USER
+        envName: DB_USER
+      - key: DB_PASSWORD
+        envName: DB_PASSWORD
+      - key: AUTH_SERVER_URL
+        envName: AUTH_SERVER_URL
+    # mountAllKeysFromSecret: "notification-database-credentials"
+
 version:
   auth: latest # Current deployed version
   frontend: latest # Current deployed version
   kos: latest # Current deployed version
+  rental: latest # Current deployed version
+  payment: latest # Current deployed version
+  notification: latest # Current deployed version
+  chat: latest # Current deployed version
   lastUpdated: "" # Timestamp of last update
   deployedBy: "" # Who triggered the deployment
+

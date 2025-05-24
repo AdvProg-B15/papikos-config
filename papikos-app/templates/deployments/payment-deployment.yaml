@@ -1,0 +1,91 @@
+{{- $top := . -}}
+{{- $paymentValues := .Values.payment -}}
+{{- $globalValues := .Values.global -}}
+{{- range $color := list "blue" "green" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "papikos-app.fullname" $top }}-payment-{{ $color }}
+  labels:
+    {{- include "papikos-app.labels" $top | nindent 4 }}
+    app.kubernetes.io/component: payment
+    version: {{ $color }} # Crucial for service selection
+spec:
+  replicas: {{ $paymentValues.replicaCount | default 1 }} # Consider if you want different replica counts for blue/green or for active/inactive
+  selector:
+    matchLabels:
+      {{- include "papikos-app.selectorLabels" $top | nindent 6 }}
+      app.kubernetes.io/component: payment # Keep this to select payment pods
+      version: {{ $color }} # Differentiate by color
+  template:
+    metadata:
+      labels:
+        {{- include "papikos-app.selectorLabels" $top | nindent 8 }}
+        app.kubernetes.io/component: payment # Keep this to identify as payment pods
+        version: {{ $color }} # Differentiate by color
+        # You might add an annotation for the last deployed time or git commit for this color
+    spec:
+      {{- with $top.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "papikos-app.serviceAccountName" $top }}
+      securityContext:
+        {{- toYaml $top.Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: payment # The container name itself usually remains 'payment'
+          securityContext:
+            {{- toYaml $paymentValues.securityContext | default $top.Values.securityContext | nindent 12 }}
+          image: "{{ $paymentValues.image.repository }}:{{ $paymentValues.image.tag | default $top.Chart.AppVersion }}"
+          imagePullPolicy: {{ $paymentValues.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: http
+              containerPort: {{ $paymentValues.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health 
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            {{- toYaml $paymentValues.resources | default $top.Values.resources | nindent 12 }}
+          {{- if $paymentValues.config.enabled }}
+          {{- if $paymentValues.config.mountAllKeysFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ $paymentValues.config.mountAllKeysFromSecret }}
+            - secretRef:
+                name: {{ $paymentValues.rabbitmq.mountAllKeysFromSecret }}
+          {{- else if $paymentValues.config.secretName }}
+          envFrom:
+            - secretRef:
+                name: {{ $paymentValues.rabbitmq.mountAllKeysFromSecret }}
+          env:
+            {{- range $paymentValues.config.envMappings }}
+            - name: {{ .envName }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $paymentValues.config.secretName }} # Note: $paymentValues is used here
+                  key: {{ .key }}
+            {{- end }}
+            # Add other non-secret specific env vars for payment if any
+            # - name: DEPLOY_COLOR
+            #   value: {{ $color }}
+          {{- end }}
+          {{- end }}
+      {{- with $top.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $top.Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $top.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+{{- end }}
+

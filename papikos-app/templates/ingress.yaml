@@ -52,3 +52,56 @@ spec:
               number: {{ .Values.kos.service.port }}
   {{- end }}
 
+  {{- if .Values.rental.ingress.enabled }}
+  - host: {{ .Values.rental.ingress.host | quote }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.rental.service.name | default (printf "%s-rental" (include "papikos-app.fullname" .)) }} # Defaulting service name convention
+            port:
+              number: {{ .Values.rental.service.port }}
+  {{- end }}
+  
+  {{- if .Values.payment.ingress.enabled }}
+  - host: {{ .Values.payment.ingress.host | quote }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.payment.service.name | default (printf "%s-payment" (include "papikos-app.fullname" .)) }} # Defaulting service name convention
+            port:
+              number: {{ .Values.payment.service.port }}
+  {{- end }}
+  
+  {{- if .Values.notification.ingress.enabled }}
+  - host: {{ .Values.notification.ingress.host | quote }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.notification.service.name | default (printf "%s-notification" (include "papikos-app.fullname" .)) }} # Defaulting service name convention
+            port:
+              number: {{ .Values.notification.service.port }}
+  {{- end }}
+  
+  {{- if .Values.chat.ingress.enabled }}
+  - host: {{ .Values.chat.ingress.host | quote }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.chat.service.name | default (printf "%s-chat" (include "papikos-app.fullname" .)) }} # Defaulting service name convention
+            port:
+              number: {{ .Values.chat.service.port }}
+  {{- end }}
+  
+

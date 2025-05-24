@@ -1,0 +1,91 @@
+{{- $top := . -}}
+{{- $notificationValues := .Values.notification -}}
+{{- $globalValues := .Values.global -}}
+{{- range $color := list "blue" "green" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "papikos-app.fullname" $top }}-notification-{{ $color }}
+  labels:
+    {{- include "papikos-app.labels" $top | nindent 4 }}
+    app.kubernetes.io/component: notification
+    version: {{ $color }} # Crucial for service selection
+spec:
+  replicas: {{ $notificationValues.replicaCount | default 1 }} # Consider if you want different replica counts for blue/green or for active/inactive
+  selector:
+    matchLabels:
+      {{- include "papikos-app.selectorLabels" $top | nindent 6 }}
+      app.kubernetes.io/component: notification # Keep this to select notification pods
+      version: {{ $color }} # Differentiate by color
+  template:
+    metadata:
+      labels:
+        {{- include "papikos-app.selectorLabels" $top | nindent 8 }}
+        app.kubernetes.io/component: notification # Keep this to identify as notification pods
+        version: {{ $color }} # Differentiate by color
+        # You might add an annotation for the last deployed time or git commit for this color
+    spec:
+      {{- with $top.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "papikos-app.serviceAccountName" $top }}
+      securityContext:
+        {{- toYaml $top.Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: notification # The container name itself usually remains 'notification'
+          securityContext:
+            {{- toYaml $notificationValues.securityContext | default $top.Values.securityContext | nindent 12 }}
+          image: "{{ $notificationValues.image.repository }}:{{ $notificationValues.image.tag | default $top.Chart.AppVersion }}"
+          imagePullPolicy: {{ $notificationValues.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: http
+              containerPort: {{ $notificationValues.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health 
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            {{- toYaml $notificationValues.resources | default $top.Values.resources | nindent 12 }}
+          {{- if $notificationValues.config.enabled }}
+          {{- if $notificationValues.config.mountAllKeysFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ $notificationValues.config.mountAllKeysFromSecret }}
+            - secretRef:
+                name: {{ $notificationValues.rabbitmq.mountAllKeysFromSecret }}
+          {{- else if $notificationValues.config.secretName }}
+          envFrom:
+            - secretRef:
+                name: {{ $notificationValues.rabbitmq.mountAllKeysFromSecret }}
+          env:
+            {{- range $notificationValues.config.envMappings }}
+            - name: {{ .envName }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $notificationValues.config.secretName }} # Note: $notificationValues is used here
+                  key: {{ .key }}
+            {{- end }}
+            # Add other non-secret specific env vars for notification if any
+            # - name: DEPLOY_COLOR
+            #   value: {{ $color }}
+          {{- end }}
+          {{- end }}
+      {{- with $top.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $top.Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $top.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+{{- end }}
+
