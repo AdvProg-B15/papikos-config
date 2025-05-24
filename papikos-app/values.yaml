@@ -4,15 +4,12 @@ global:
   imageRegistry: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository
   # Default image pull policy
   imagePullPolicy: Always
-
 ingress:
   annotations: {}
   # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-
 serviceAccount:
   create: false
   name: "default"
-
 frontend:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-fe
@@ -71,7 +68,7 @@ auth:
 kos:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-kos
-    tag: v0.0.1 # This will be automatically updated by CI/CD
+    tag: v0.0.3 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: kos
@@ -103,7 +100,6 @@ kos:
         envName: DB_PASSWORD
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
-    # mountAllKeysFromSecret: "kos-database-credentials"
 
 rental:
   image:
