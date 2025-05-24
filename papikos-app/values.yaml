@@ -226,7 +226,7 @@ chat:
     # tls: # Optional TLS configuration for kos
     # - hosts:
     #   - notification.papikos.shop
-    #   secretName: notification-papikos-shop-tls
+    #   secretName: chat-papikos-shop-tls
   # Database configuration from Kubernetes Secret
   rabbitmq:
     enabled: true

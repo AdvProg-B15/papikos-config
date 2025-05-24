@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki-stack
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: loki-stack
+    targetRevision: "2.10.2" 
+    helm:
+      releaseName: loki-stack
+      values: |
+        loki:
+          enabled: true
+          persistence:
+            enabled: true
+            storageClassName: default 
+            accessModes: ["ReadWriteOnce"]
+            size: 10Gi 
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 300m
+              memory: 512Mi
+          # For single binary mode (default and good for small setups)
+          # commonConfig:
+          #   replication_factor: 1
+          # storage:
+          #   type: 'filesystem'
+
+        # Promtail Configuration (log shipper)
+        promtail:
+          enabled: true
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 100m
+              memory: 256Mi
+
+        # Grafana: Disable Grafana in loki-stack as we are using the one from kube-prometheus-stack
+        grafana:
+          enabled: false
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true 
