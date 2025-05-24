@@ -63,14 +63,7 @@ spec:
                   resources:
                     requests:
                       storage: 10Gi 
-            resources:
-              requests:
-                cpu: 200m
-                memory: 512Mi
-              limits:
-                cpu: 500m
-                memory: 1Gi
-
+       
         # Alertmanager Configuration
         alertmanager:
           alertmanagerSpec:
