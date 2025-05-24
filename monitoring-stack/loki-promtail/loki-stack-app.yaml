@@ -20,14 +20,7 @@ spec:
             enabled: true
             storageClassName: default 
             accessModes: ["ReadWriteOnce"]
-            size: 10Gi 
-          resources:
-            requests:
-              cpu: 100m
-              memory: 256Mi
-            limits:
-              cpu: 300m
-              memory: 512Mi
+            size: 3Gi 
           # For single binary mode (default and good for small setups)
           # commonConfig:
           #   replication_factor: 1
@@ -37,14 +30,7 @@ spec:
         # Promtail Configuration (log shipper)
         promtail:
           enabled: true
-          resources:
-            requests:
-              cpu: 50m
-              memory: 128Mi
-            limits:
-              cpu: 100m
-              memory: 256Mi
-
+          
         # Grafana: Disable Grafana in loki-stack as we are using the one from kube-prometheus-stack
         grafana:
           enabled: false

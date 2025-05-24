@@ -33,14 +33,7 @@ spec:
             type: pvc
             storageClassName: default
             accessModes: ["ReadWriteOnce"]
-            size: 5Gi # Reduced size
-          resources:
-            requests:
-              cpu: 100m
-              memory: 256Mi
-            limits:
-              cpu: 300m
-              memory: 512Mi
+            size: 2Gi # Reduced size
           # Add Loki as an additional datasource
           # This assumes Loki will be available at 'loki-stack.monitoring.svc.cluster.local:3100'
           additionalDataSources:
@@ -62,7 +55,7 @@ spec:
                   accessModes: ["ReadWriteOnce"]
                   resources:
                     requests:
-                      storage: 10Gi 
+                      storage: 4Gi 
        
         # Alertmanager Configuration
         alertmanager:
@@ -74,32 +67,11 @@ spec:
                   accessModes: ["ReadWriteOnce"]
                   resources:
                     requests:
-                      storage: 2Gi
-            resources:
-              requests:
-                cpu: 50m
-                memory: 128Mi
-              limits:
-                cpu: 100m
-                memory: 256Mi
+                      storage: 1Gi
 
         kubeStateMetrics:
-          resources:
-            requests:
-              cpu: 50m
-              memory: 128Mi
-            limits:
-              cpu: 100m
-              memory: 256Mi
         nodeExporter:
-          resources:
-            requests:
-              cpu: 20m
-              memory: 64Mi
-            limits:
-              cpu: 50m
-              memory: 128Mi
-
+        
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
