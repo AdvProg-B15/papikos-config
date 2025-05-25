@@ -10,7 +10,6 @@ ingress:
 serviceAccount:
   create: false
   name: "default"
-
 frontend:
   enabled: true
   image:
@@ -25,7 +24,6 @@ frontend:
     host: papikos.shop
   metrics:
     path: "/actuator/prometheus"
-
 auth:
   enabled: true
   image:
@@ -68,7 +66,7 @@ kos:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-kos
-    tag: v0.0.3 # This will be automatically updated by CI/CD
+    tag: v0.0.5 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: kos
@@ -97,7 +95,6 @@ kos:
         envName: DB_PASSWORD
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
-
 rental:
   enabled: true
   image:
@@ -132,7 +129,6 @@ rental:
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
     # mountAllKeysFromSecret: "kos-database-credentials"
-
 payment:
   enabled: true
   image:
@@ -167,7 +163,6 @@ payment:
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
     # mountAllKeysFromSecret: "payment-database-credentials"
-
 notification:
   enabled: true
   image:
@@ -202,7 +197,6 @@ notification:
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
     # mountAllKeysFromSecret: "notification-database-credentials"
-
 chat:
   enabled: true
   image:
@@ -237,7 +231,6 @@ chat:
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
     # mountAllKeysFromSecret: "notification-database-credentials"
-
 version:
   auth: latest # Current deployed version
   frontend: latest # Current deployed version
@@ -248,4 +241,3 @@ version:
   chat: latest # Current deployed version
   lastUpdated: "" # Timestamp of last update
   deployedBy: "" # Who triggered the deployment
-
