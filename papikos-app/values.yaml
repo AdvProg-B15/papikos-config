@@ -167,7 +167,7 @@ notification:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-notification-wishlist
-    tag: v0.0.1 # This will be automatically updated by CI/CD
+    tag: v0.0.2 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: notification
