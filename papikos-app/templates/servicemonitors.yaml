@@ -1,0 +1,39 @@
+{{- /* Loop through each service defined in values that should have a ServiceMonitor */}}
+{{- range $componentName, $componentValues := .Values }}
+  {{- /* Check if the component is a map (likely a service definition) and has 'service' and 'enabled' (implicit or explicit) */}}
+  {{- if and (kindIs "map" $componentValues) $componentValues.service $componentValues.image (ne $componentName "global") (ne $componentName "ingress") (ne $componentName "serviceAccount") (ne $componentName "version") (ne $componentName "prometheusUI") (ne $componentName "grafanaUI") }}
+    {{- if $componentValues.enabled | default true }} {{/* Assume enabled if not specified, or add an 'enabled' flag per service */}}
+      {{- $serviceName := $componentValues.service.name | default (printf "%s-%s" (include "papikos-app.fullname" $) $componentName) }}
+      {{- $metricsPath := $componentValues.metrics.path | default "/actuator/prometheus" }}
+      {{- $metricsPortName := $componentValues.service.metricsPortName | default "http" }} {{/* Default to 'http' as per your auth-service */}}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "papikos-app.fullname" $ }}-{{ $componentName }}-monitor
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "papikos-app.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ $componentName }}-monitor
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: {{ $componentName }}
+  namespaceSelector:
+    matchNames:
+      - {{ $.Release.Namespace }} 
+  endpoints:
+  - port: {{ $metricsPortName }} 
+    path: {{ $metricsPath }}
+    interval: 30s
+    scrapeTimeout: 15s
+    relabelings:
+    - sourceLabels: [__meta_kubernetes_pod_label_version] 
+      targetLabel: color
+    {{- if $componentValues.metrics.relabelings }}
+    {{- toYaml $componentValues.metrics.relabelings | nindent 4 }}
+    {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

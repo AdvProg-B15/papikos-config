@@ -10,7 +10,9 @@ ingress:
 serviceAccount:
   create: false
   name: "default"
+
 frontend:
+  enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-fe
     tag: v0.0.1
@@ -21,12 +23,11 @@ frontend:
   ingress:
     enabled: true
     host: papikos.shop
-    # tls: # Optional TLS configuration for frontend
-    # - hosts:
-    #   - papikos.shop
-    #   secretName: papikos-shop-tls
+  metrics:
+    path: "/actuator/prometheus"
 
 auth:
+  enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-auth
     tag: v0.0.4 # This will be automatically updated by CI/CD
@@ -37,10 +38,8 @@ auth:
   ingress:
     enabled: true
     host: auth.papikos.shop
-    # tls: # Optional TLS configuration for auth
-    # - hosts:
-    #   - auth.papikos.shop
-    #   secretName: auth-papikos-shop-tls
+  metrics:
+    path: "/actuator/prometheus"
   rabbitmq:
     enabled: true
     mountAllKeysFromSecret: "amqp-configuration"
@@ -66,6 +65,7 @@ auth:
       - key: ADMIN_PASSWORD
         envName: ADMIN_PASSWORD
 kos:
+  enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-kos
     tag: v0.0.3 # This will be automatically updated by CI/CD
@@ -76,11 +76,8 @@ kos:
   ingress:
     enabled: true
     host: kos.papikos.shop
-    # tls: # Optional TLS configuration for kos
-    # - hosts:
-    #   - kos.papikos.shop
-    #   secretName: kos-papikos-shop-tls
-  # Database configuration from Kubernetes Secret
+  metrics:
+    path: "/actuator/prometheus"
   rabbitmq:
     enabled: true
     mountAllKeysFromSecret: "amqp-configuration"
@@ -102,6 +99,7 @@ kos:
         envName: AUTH_SERVER_URL
 
 rental:
+  enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-rental
     tag: v0.0.1 # This will be automatically updated by CI/CD
@@ -112,11 +110,8 @@ rental:
   ingress:
     enabled: true
     host: rental.papikos.shop
-    # tls: # Optional TLS configuration for kos
-    # - hosts:
-    #   - kos.papikos.shop
-    #   secretName: kos-papikos-shop-tls
-  # Database configuration from Kubernetes Secret
+  metrics:
+    path: "/actuator/prometheus"
   rabbitmq:
     enabled: true
     mountAllKeysFromSecret: "amqp-configuration"
@@ -139,6 +134,7 @@ rental:
     # mountAllKeysFromSecret: "kos-database-credentials"
 
 payment:
+  enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-payment
     tag: v0.0.1 # This will be automatically updated by CI/CD
@@ -149,11 +145,8 @@ payment:
   ingress:
     enabled: true
     host: payment.papikos.shop
-    # tls: # Optional TLS configuration for kos
-    # - hosts:
-    #   - payment.papikos.shop
-    #   secretName: payment-papikos-shop-tls
-  # Database configuration from Kubernetes Secret
+  metrics:
+    path: "/actuator/prometheus"
   rabbitmq:
     enabled: true
     mountAllKeysFromSecret: "amqp-configuration"
@@ -176,6 +169,7 @@ payment:
     # mountAllKeysFromSecret: "payment-database-credentials"
 
 notification:
+  enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-notification-wishlist
     tag: v0.0.1 # This will be automatically updated by CI/CD
@@ -186,11 +180,8 @@ notification:
   ingress:
     enabled: true
     host: notification.papikos.shop
-    # tls: # Optional TLS configuration for kos
-    # - hosts:
-    #   - notification.papikos.shop
-    #   secretName: notification-papikos-shop-tls
-  # Database configuration from Kubernetes Secret
+  metrics:
+    path: "/actuator/prometheus"
   rabbitmq:
     enabled: true
     mountAllKeysFromSecret: "amqp-configuration"
@@ -213,6 +204,7 @@ notification:
     # mountAllKeysFromSecret: "notification-database-credentials"
 
 chat:
+  enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-chat
     tag: v0.0.1 # This will be automatically updated by CI/CD
@@ -223,11 +215,8 @@ chat:
   ingress:
     enabled: true
     host: chat.papikos.shop
-    # tls: # Optional TLS configuration for kos
-    # - hosts:
-    #   - notification.papikos.shop
-    #   secretName: chat-papikos-shop-tls
-  # Database configuration from Kubernetes Secret
+  metrics:
+    path: "/actuator/prometheus"
   rabbitmq:
     enabled: true
     mountAllKeysFromSecret: "amqp-configuration"

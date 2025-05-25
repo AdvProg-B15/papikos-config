@@ -22,10 +22,10 @@ spec:
             accessModes: ["ReadWriteOnce"]
             size: 3Gi 
           # For single binary mode (default and good for small setups)
-          # commonConfig:
-          #   replication_factor: 1
-          # storage:
-          #   type: 'filesystem'
+          commonConfig:
+            replication_factor: 1
+          storage:
+            type: 'filesystem'
 
         # Promtail Configuration (log shipper)
         promtail:
