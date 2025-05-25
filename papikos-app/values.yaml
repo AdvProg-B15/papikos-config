@@ -25,7 +25,6 @@ frontend:
     # - hosts:
     #   - papikos.shop
     #   secretName: papikos-shop-tls
-
 auth:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-auth
@@ -68,7 +67,7 @@ auth:
 kos:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-kos
-    tag: v0.0.3 # This will be automatically updated by CI/CD
+    tag: v0.0.4 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: kos
@@ -100,7 +99,6 @@ kos:
         envName: DB_PASSWORD
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
-
 rental:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-rental
@@ -137,7 +135,6 @@ rental:
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
     # mountAllKeysFromSecret: "kos-database-credentials"
-
 payment:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-payment
@@ -174,7 +171,6 @@ payment:
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
     # mountAllKeysFromSecret: "payment-database-credentials"
-
 notification:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-notification-wishlist
@@ -211,7 +207,6 @@ notification:
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
     # mountAllKeysFromSecret: "notification-database-credentials"
-
 chat:
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-chat
@@ -248,7 +243,6 @@ chat:
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
     # mountAllKeysFromSecret: "notification-database-credentials"
-
 version:
   auth: latest # Current deployed version
   frontend: latest # Current deployed version
@@ -259,4 +253,3 @@ version:
   chat: latest # Current deployed version
   lastUpdated: "" # Timestamp of last update
   deployedBy: "" # Who triggered the deployment
-
