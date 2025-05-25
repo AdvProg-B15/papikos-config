@@ -99,7 +99,7 @@ rental:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-rental
-    tag: v0.0.1 # This will be automatically updated by CI/CD
+    tag: v0.0.3 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: rental
@@ -128,7 +128,7 @@ rental:
         envName: DB_PASSWORD
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
-    # mountAllKeysFromSecret: "kos-database-credentials"
+        # mountAllKeysFromSecret: "kos-database-credentials"
 payment:
   enabled: true
   image:
@@ -162,7 +162,7 @@ payment:
         envName: DB_PASSWORD
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
-    # mountAllKeysFromSecret: "payment-database-credentials"
+        # mountAllKeysFromSecret: "payment-database-credentials"
 notification:
   enabled: true
   image:
@@ -196,7 +196,7 @@ notification:
         envName: DB_PASSWORD
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
-    # mountAllKeysFromSecret: "notification-database-credentials"
+        # mountAllKeysFromSecret: "notification-database-credentials"
 chat:
   enabled: true
   image:
@@ -230,7 +230,7 @@ chat:
         envName: DB_PASSWORD
       - key: AUTH_SERVER_URL
         envName: AUTH_SERVER_URL
-    # mountAllKeysFromSecret: "notification-database-credentials"
+        # mountAllKeysFromSecret: "notification-database-credentials"
 version:
   auth: latest # Current deployed version
   frontend: latest # Current deployed version
