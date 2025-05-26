@@ -128,7 +128,7 @@ chat:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-chat
-    tag: v0.0.5 # This will be automatically updated by CI/CD
+    tag: v0.0.6 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: chat
