@@ -28,7 +28,7 @@ auth:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-auth
-    tag: v0.0.4 # This will be automatically updated by CI/CD
+    tag: v0.0.5 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: auth
@@ -144,7 +144,6 @@ chat:
   config:
     enabled: true
     mountAllKeysFromSecret: "chat-configuration"
-
 version:
   auth: latest # Current deployed version
   frontend: latest # Current deployed version
