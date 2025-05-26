@@ -41,27 +41,9 @@ auth:
   rabbitmq:
     enabled: true
     mountAllKeysFromSecret: "amqp-configuration"
-  # Database configuration from Kubernetes Secret
   config:
     enabled: true
-    secretName: "auth-configuration"
-    envMappings:
-      - key: DB_HOST
-        envName: DB_HOST
-      - key: DB_NAME
-        envName: DB_NAME
-      - key: DB_PORT
-        envName: DB_PORT
-      - key: DB_USER
-        envName: DB_USER
-      - key: DB_PASSWORD
-        envName: DB_PASSWORD
-      - key: JWT_SECRET
-        envName: JWT_SECRET
-      - key: ADMIN_EMAIL
-        envName: ADMIN_EMAIL
-      - key: ADMIN_PASSWORD
-        envName: ADMIN_PASSWORD
+    mountAllKeysFromSecret: "auth-configuration"
 kos:
   enabled: true
   image:
@@ -81,20 +63,7 @@ kos:
     mountAllKeysFromSecret: "amqp-configuration"
   config:
     enabled: true
-    secretName: "kos-configuration"
-    envMappings:
-      - key: DB_HOST
-        envName: DB_HOST
-      - key: DB_NAME
-        envName: DB_NAME
-      - key: DB_PORT
-        envName: DB_PORT
-      - key: DB_USER
-        envName: DB_USER
-      - key: DB_PASSWORD
-        envName: DB_PASSWORD
-      - key: AUTH_SERVER_URL
-        envName: AUTH_SERVER_URL
+    mountAllKeysFromSecret: "kos-configuration"
 rental:
   enabled: true
   image:
@@ -114,21 +83,7 @@ rental:
     mountAllKeysFromSecret: "amqp-configuration"
   config:
     enabled: true
-    secretName: "rental-configuration"
-    envMappings:
-      - key: DB_HOST
-        envName: DB_HOST
-      - key: DB_NAME
-        envName: DB_NAME
-      - key: DB_PORT
-        envName: DB_PORT
-      - key: DB_USER
-        envName: DB_USER
-      - key: DB_PASSWORD
-        envName: DB_PASSWORD
-      - key: AUTH_SERVER_URL
-        envName: AUTH_SERVER_URL
-        # mountAllKeysFromSecret: "kos-database-credentials"
+    mountAllKeysFromSecret: "rental-configuration"
 payment:
   enabled: true
   image:
@@ -148,21 +103,7 @@ payment:
     mountAllKeysFromSecret: "amqp-configuration"
   config:
     enabled: true
-    secretName: "payment-configuration"
-    envMappings:
-      - key: DB_HOST
-        envName: DB_HOST
-      - key: DB_NAME
-        envName: DB_NAME
-      - key: DB_PORT
-        envName: DB_PORT
-      - key: DB_USER
-        envName: DB_USER
-      - key: DB_PASSWORD
-        envName: DB_PASSWORD
-      - key: AUTH_SERVER_URL
-        envName: AUTH_SERVER_URL
-        # mountAllKeysFromSecret: "payment-database-credentials"
+    mountAllKeysFromSecret: "payment-configuration"
 notification:
   enabled: true
   image:
@@ -182,21 +123,7 @@ notification:
     mountAllKeysFromSecret: "amqp-configuration"
   config:
     enabled: true
-    secretName: "notification-configuration"
-    envMappings:
-      - key: DB_HOST
-        envName: DB_HOST
-      - key: DB_NAME
-        envName: DB_NAME
-      - key: DB_PORT
-        envName: DB_PORT
-      - key: DB_USER
-        envName: DB_USER
-      - key: DB_PASSWORD
-        envName: DB_PASSWORD
-      - key: AUTH_SERVER_URL
-        envName: AUTH_SERVER_URL
-        # mountAllKeysFromSecret: "notification-database-credentials"
+    mountAllKeysFromSecret: "notification-configuration"
 chat:
   enabled: true
   image:
@@ -216,21 +143,8 @@ chat:
     mountAllKeysFromSecret: "amqp-configuration"
   config:
     enabled: true
-    secretName: "chat-configuration"
-    envMappings:
-      - key: DB_HOST
-        envName: DB_HOST
-      - key: DB_NAME
-        envName: DB_NAME
-      - key: DB_PORT
-        envName: DB_PORT
-      - key: DB_USER
-        envName: DB_USER
-      - key: DB_PASSWORD
-        envName: DB_PASSWORD
-      - key: AUTH_SERVER_URL
-        envName: AUTH_SERVER_URL
-        # mountAllKeysFromSecret: "notification-database-credentials"
+    mountAllKeysFromSecret: "chat-configuration"
+
 version:
   auth: latest # Current deployed version
   frontend: latest # Current deployed version

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: ./manage-secret.sh --name my-secret --namespace my-namespace --env-file .env
+# Usage: ./manage-secret.sh -n my-secret -ns my-namespace -f .env
 
 # Default values
 ENV_FILE=".env"
