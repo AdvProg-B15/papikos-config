@@ -48,7 +48,7 @@ kos:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-kos
-    tag: v0.0.5 # This will be automatically updated by CI/CD
+    tag: v0.0.6 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: kos
@@ -68,7 +68,7 @@ rental:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-rental
-    tag: v0.0.3 # This will be automatically updated by CI/CD
+    tag: v0.0.5 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: rental
@@ -88,7 +88,7 @@ payment:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-payment
-    tag: v0.0.1 # This will be automatically updated by CI/CD
+    tag: v0.0.2 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: payment
@@ -108,7 +108,7 @@ notification:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-notification-wishlist
-    tag: v0.0.1 # This will be automatically updated by CI/CD
+    tag: v0.0.4 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: notification
@@ -128,7 +128,7 @@ chat:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-chat
-    tag: v0.0.1 # This will be automatically updated by CI/CD
+    tag: v0.0.5 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: chat

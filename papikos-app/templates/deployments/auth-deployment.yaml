@@ -42,12 +42,6 @@ spec:
             - name: http
               containerPort: {{ $authValues.service.port }}
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /api/v1/health 
-              port: http
-            initialDelaySeconds: 15
-            periodSeconds: 20
           resources:
             {{- toYaml $authValues.resources | default $top.Values.resources | nindent 12 }}
           {{- if $authValues.config.enabled }}

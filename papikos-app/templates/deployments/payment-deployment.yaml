@@ -42,12 +42,6 @@ spec:
             - name: http
               containerPort: {{ $paymentValues.service.port }}
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /api/v1/health 
-              port: http
-            initialDelaySeconds: 15
-            periodSeconds: 20
           resources:
             {{- toYaml $paymentValues.resources | default $top.Values.resources | nindent 12 }}
           {{- if $paymentValues.config.enabled }}
