@@ -24,6 +24,9 @@ frontend:
     host: papikos.shop
   metrics:
     path: "/actuator/prometheus"
+  config:
+    enabled: true
+    mountAllKeysFromSecret: "frontend-configuration"
 auth:
   enabled: true
   image:
