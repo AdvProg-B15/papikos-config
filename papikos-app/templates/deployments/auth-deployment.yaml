@@ -9,21 +9,20 @@ metadata:
   labels:
     {{- include "papikos-app.labels" $top | nindent 4 }}
     app.kubernetes.io/component: auth
-    version: {{ $color }} # Crucial for service selection
+    version: {{ $color }}
 spec:
-  replicas: {{ $authValues.replicaCount | default 1 }} # Consider if you want different replica counts for blue/green or for active/inactive
+  replicas: {{ $authValues.replicaCount | default 1 }}
   selector:
     matchLabels:
       {{- include "papikos-app.selectorLabels" $top | nindent 6 }}
-      app.kubernetes.io/component: auth # Keep this to select auth pods
-      version: {{ $color }} # Differentiate by color
+      app.kubernetes.io/component: auth
+      version: {{ $color }} 
   template:
     metadata:
       labels:
         {{- include "papikos-app.selectorLabels" $top | nindent 8 }}
         app.kubernetes.io/component: auth # Keep this to identify as auth pods
-        version: {{ $color }} # Differentiate by color
-        # You might add an annotation for the last deployed time or git commit for this color
+        version: {{ $color }}
     spec:
       {{- with $top.Values.imagePullSecrets }}
       imagePullSecrets:
@@ -33,7 +32,7 @@ spec:
       securityContext:
         {{- toYaml $top.Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: auth # The container name itself usually remains 'auth'
+        - name: auth
           securityContext:
             {{- toYaml $authValues.securityContext | default $top.Values.securityContext | nindent 12 }}
           image: "{{ $authValues.image.repository }}:{{ $authValues.image.tag | default $top.Chart.AppVersion }}"
@@ -60,12 +59,9 @@ spec:
             - name: {{ .envName }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ $authValues.config.secretName }} # Note: $authValues is used here
+                  name: {{ $authValues.config.secretName }}
                   key: {{ .key }}
             {{- end }}
-            # Add other non-secret specific env vars for auth if any
-            # - name: DEPLOY_COLOR
-            #   value: {{ $color }}
           {{- end }}
           {{- end }}
       {{- with $top.Values.nodeSelector }}

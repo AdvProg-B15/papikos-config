@@ -28,6 +28,7 @@ frontend:
     enabled: true
     mountAllKeysFromSecret: "frontend-configuration"
 auth:
+  replicaCount: 2
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-auth
@@ -48,6 +49,7 @@ auth:
     enabled: true
     mountAllKeysFromSecret: "auth-configuration"
 kos:
+  replicaCount: 2
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-kos
@@ -68,6 +70,7 @@ kos:
     enabled: true
     mountAllKeysFromSecret: "kos-configuration"
 rental:
+  replicaCount: 2
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-rental
@@ -88,6 +91,7 @@ rental:
     enabled: true
     mountAllKeysFromSecret: "rental-configuration"
 payment:
+  replicaCount: 2
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-payment
@@ -108,6 +112,7 @@ payment:
     enabled: true
     mountAllKeysFromSecret: "payment-configuration"
 notification:
+  replicaCount: 2
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-notification-wishlist
@@ -128,6 +133,7 @@ notification:
     enabled: true
     mountAllKeysFromSecret: "notification-configuration"
 chat:
+  replicaCount: 2
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-chat
