@@ -14,7 +14,7 @@ frontend:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-fe
-    tag: v0.0.1
+    tag: v0.0.3
     imagePullPolicy: Always
   service:
     name: frontend
