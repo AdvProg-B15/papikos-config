@@ -88,7 +88,7 @@ payment:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-payment
-    tag: v0.0.10 # This will be automatically updated by CI/CD
+    tag: v0.0.11 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: payment
