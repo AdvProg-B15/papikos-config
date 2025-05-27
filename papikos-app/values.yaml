@@ -14,7 +14,7 @@ frontend:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-fe
-    tag: v0.0.1
+    tag: v0.0.3
     imagePullPolicy: Always
   service:
     name: frontend
@@ -31,7 +31,7 @@ auth:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-auth
-    tag: v0.0.4 # This will be automatically updated by CI/CD
+    tag: v0.0.5 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: auth
@@ -51,7 +51,7 @@ kos:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-kos
-    tag: v0.0.6 # This will be automatically updated by CI/CD
+    tag: v0.0.7 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: kos
@@ -71,7 +71,7 @@ rental:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-rental
-    tag: v0.0.5 # This will be automatically updated by CI/CD
+    tag: v0.0.13 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: rental
@@ -91,7 +91,7 @@ payment:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-payment
-    tag: v0.0.2 # This will be automatically updated by CI/CD
+    tag: v0.0.11 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: payment
@@ -111,7 +111,7 @@ notification:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-notification-wishlist
-    tag: v0.0.4 # This will be automatically updated by CI/CD
+    tag: v0.0.12 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: notification
@@ -131,7 +131,7 @@ chat:
   enabled: true
   image:
     repository: asia-southeast1-docker.pkg.dev/belajar-kube-457207/papikos-repository/papikos-chat
-    tag: v0.0.5 # This will be automatically updated by CI/CD
+    tag: v0.0.7 # This will be automatically updated by CI/CD
     imagePullPolicy: Always
   service:
     name: chat
@@ -147,7 +147,6 @@ chat:
   config:
     enabled: true
     mountAllKeysFromSecret: "chat-configuration"
-
 version:
   auth: latest # Current deployed version
   frontend: latest # Current deployed version
